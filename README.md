@@ -1,2 +1,1 @@
-# elenagiacomazzi
-Code of my internship (October 2022-April 2023)
+# Internship of Elena Giacomazzi (October 2022-April 2023)
