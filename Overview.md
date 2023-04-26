@@ -1,0 +1,183 @@
+# Code Overview
+
+Files maked in **Bold** are the ones that I feel might be of greater importance for future works.
+
+- **build-env1.sh**
+    - bash script including SLURM commands to create an environment with the packages neede on Valeria
+- all other bash files
+    - where used for multiple Valeria jobs
+    - some include the use of arrays which makes it possible to start a script with different parameters (exp.: bash_gen1000_pfs_days.sh runs through different feature selection methods to parallelize the tasks and get a faster result)
+- **HowToVALERIA.md**
+    - markdown file which presents the steps I needed to set up and use Valeria (PDF is uploaded as well)
+
+## Data Exploration
+- 0_Data_Explo.ipynb
+    - first exploration of the dataset that were given to me
+    - checked the patient overlap between clinical, Radiomics, genomics & IHC
+- 1_multi_lin_reg.ipynb
+    - first steps with a linear regression 
+- 2_structure.md
+    - Written out psydo code of what I planned to implement
+- 3_cohort_explo.ipynb
+    - Exploration of the cohorts (for the cohort figures in the papers)
+- 4_data_load_genomics.ipynb
+    - testing and implementing the data load an preperation for genomics data
+
+## Genomics
+- creat_binary_gene_features.ipynb
+    - notebook with function which could create binary features of the input 
+    - compares all genes to all others by < and >
+- **mrmr_classifier_binary.ipynb**
+    - Code to test a pipeline of: 
+        - raw genes -> MRMR feature selection -> create binary (gene1 < gene2, gene2 > gene1 and so on) features from that -> (feature selection) -> logisticRegression/SVM for classification
+        - test the model on the validation cohort
+- **test_parameters_binary_genes.ipynb**
+    - Process of mrmr_classifier_binary put into a function to test different parameter configurations
+
+## Prediction Folder
+- **0_reg_general.py**
+    - Script to be strated using a SLURM command but also locally
+    - starts a regression task with many different feature selection and ML prediction algorithm combinations
+- 1_os_days_Radio_check_data.ipynb
+    - Used to check the return of the data load function using the helfer file
+    - Plots histogram of os_days distribution
+    - first try Kaplan meier Fitter
+    - Combines results returned from Valeria
+- 2_os_days_Radio_pred.ipynb
+    - Added ecog feature to the dataset of the regression problem after the feature selection on the radiomics data took place
+    - Test this procedure
+    - Test the classification of the two outer tertiers (extreme classes)
+    - More excluded code testing
+- 2.1_os_days_Radio_pred_script.py
+    - version of 0_reg_general.py when the task was not that complicated
+    - could be ignored
+- 2.1.1_switch_os_days_Radio_pred_script
+    - I first started with using discovery=IUCPQ and validation=CHUM as my initial results showed stange results otherwise
+    - This script is also an older version of 0_reg_prediction which flipped the dataset to discovers: CHUM validation: IUCPQ
+    - alls those individual scripts were needed for the submissions to Valeria
+- 2.1.2_CI_Rad_os_days_pred_Bagging
+    - Similar script to 0_reg_general, but using BaggingRegressor only
+    - CI means: discovery: Chum, validation: Iucpq
+- 2.2_class_os_days_Radio_pred_script.py
+    - Similar old script of 0_reg_general.py *but* the task is a classification task
+- 2.3_os_day_Radio_ecog_pdl1_pred_script.py
+    - old script which works as 0_reg_general.py but adds ecog and pdl1 features after the feature selection of radiomics features
+    - discover: IUCPQ, validation: CHUM
+- 2.3.1_switch_os_day_Radio_ecog_pdl1_pred.py
+    - same es 2.3_os_day_Radio_ecog_pdl1_pred_script.py 
+    - but discover: CHUM, validation: IUCPQ
+- 3_os_days_Radio_eval.ipynb
+    - first evaluation and testing notebook for evaluation of os prediction
+- 3.1_os_days_Radio_eval_script.py
+    - notebook of 3_os_days_Radio_eval.ipynb put into a script to make accessable for Valeria
+    - discovery: IUCQP, validation: CHUM
+- 3.1.1_switch_os_day_radio_eval
+    - evaluation script for discovery: CHUM, validation: IUCPQ
+- 3.3_class_os_days_Radio_eval_script.py
+    - evalusation script for classification task
+- 4_os_days_Radio_visualize.ipynb
+    - results visualisation notebook for radiomics regression tasks
+        - with ecog&pdl1
+        - without ecog&pdl1
+        - Both directions: CI= dicovery CHUM, validation: IUCPQ, IC= dicovery IUCPQ, validation: CHUM
+        - number of features used per method
+- 4.1_class_os_days_Radio_visualize.ipynb
+    - still buggy results from old classification task
+- **4.2_Heatmaps.ipynb**
+    - Results in heatmaps for Genomics regression of os_days, pfs_days and pdl1_tps for 1000 and 5000 genes
+- **5.0_Univariate_prediction.ipynb**
+    - Univariate analysis for Radiomics features
+    - also tried some grouping (texture, shape, firstorder, wavelet)
+    - t-test for comparison of distributions of os_days in CHUM vs. IUCPQ
+    - Older univariate and multivariate analysis
+- 6.0_vulcano_plot.ipynb
+    - vulcano plot for -log10(FDR) of the pearson correlations of IUCPQ with os_days
+- 7_os_class_statistical.ipynb
+    - comparison of Sevinj and my build of the binary feature groups
+    - Univariate & multivariate analysisbased on Sevinj's implementation
+- 8_build_genomics_pdl1_df.ipynb
+    - Building binary features using the median of the value
+    - Builds datafram for PDL1, PFS and OS
+    - Used for ktsp in R (was quicker for me to implement this part in python)
+- 9_test_nested_cross_validation.ipynb
+    - compare Sevinj and my CV approach
+- Analize_CV_class.ipynb
+    - tried to debug the error in the classification task (the problem was the building of the dataset not the CV)
+- CI_Bagging_Rad_os_eval.py
+    - evaluation script adapted to du bagging regressor only
+- data-import-tests+figurePlots.ipynb
+    - notebook to try different thinks
+    - build the plots that are integrated in the procedure figure in the papers (random scatter & histogram, step function...)
+- eval_script_ecog_switch.py
+    - eval script for when discovery: CHUM, validation: IUCPQ (switch) with addition of ecog and pdl1 after radiomics feature selection
+- eval_script_ecog.py
+    - evaluation script for discovery: IUCPQ, validation: IUCPQ with addition of ecog and pdl1
+- **eval_script_refactored.py**
+    - final evaluation script which can be used for Radiomics and Genomics data
+    - max value of k can be added and is added to the save files
+    - different endpoints can be given
+    - feature selection method can be defined as well as which training set to use
+- **helper_data_load.py**
+    - includes all loading and saving functions for local and Valeria
+    - returns normalized data
+    - could be set to return classification data
+    - works for Radiomics and Genomics
+- helper_eval_ecog.py
+    - helper functions which are used in the evaluation scripts which include the addition of ecog&pdl1 after radiomics feature selection
+- **helper_eval_refactored.py**
+    - refactored evaluation helper functions
+    - this the the final script that should be used now
+- helper_evaluation_class.py
+    - old evaluation script for classification task
+- helper_evaluation.py
+    - old evaluation script (recatored one is ne newer)
+- helper_prediction_class.py
+    - helper functions for the prediction of the classification tasks
+- helper_prediction_ecog.py
+    - helper function for the regression task with adding ecog&pdl1 after filtering of Radiomics features
+- **helper_prediction_refactored.py**
+    - newest script for the helper functions used in the predictions
+    - includes: MRMR, spearman, pearson, mim, f_reg,... feature selections
+    - includes: Enselble linear regression, multiple linear regression, random forest regressor, CVR, lasso regression, elasticNet regression, Bagging Regressor, Boosting Regressor (all with hyperparameter tuning)
+    - includes a nested cross-validation to find the best k features to use
+- helper_prediction.py
+    - older version of the refactored one above
+- helper_visualize.py
+    - some hepler functions useful for visualizations
+- quantile.ipynb
+    - comparison of Sevinj and my version how to calculate the tertile binary groups
+    - differences in the datasets
+- temp_test.ipynb
+    - space to test random things
+- test_eval_script_refactored.py
+    - script to test the refactored script on Valeria
+
+## R
+- CV_ktsp.R
+    - Try out CV function of the SwitchBox package
+- ktsp_first_steps.R
+    - Implementation of SwitchBox ktsp method
+    - try different k's
+- PCOSP_package_first_steps.R
+    - load the example data that is used in the paper and package
+    - understand the data composition
+- PCPSPdata_on_SwitchBoxCode.R
+    - try the original data on the SwitchBox code 
+- **PDAC_on_OS.R**
+    - using the code that is used in the paper on PDAC with training 1000 models, selecting the ones with acc>0.6 for an ensemble model
+    - On OS
+- **PDAC_on_PDL1.R**
+    - same as above but predicting PDL1
+- **PDAC_on_PFS.R**
+    - same as above but predicting pfs
+- **SwitchBox_filteringMethods.R**
+    - Try out different feature filtering methods with the ktsp method
+    - implemented MRMR with ktsp
+
+## Statistical_explo
+- 0_first_tries.ipynb
+    - statistical analysis of the cohorts data
+    - numbers of patients etc for the cohort plots of papers
+- 1_predictors.ipynb
+    - statistical analysis of the different features in groups
+    - stacked bar plots for the significant features colored by the groupsand Pembrolizumab, Nivolumab, Atezolizumab, ...
