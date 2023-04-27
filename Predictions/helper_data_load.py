@@ -134,6 +134,16 @@ def get_files(local, genomics=False, num_genomics=0):
 
 
 def get_norm_data(local, predictor, classification=False, univar=False, ecog=False, genomics=False, num_genomics=0):
+'''
+Returns the prepared and normalized data
+local: True = loads from local path, False = loads from Valeria
+predictor: clinical endpoint ("os_days", "pfs_days", "pdl1_tps")
+classification: True = binarize the clinical entpoint, False = means regression task is performed and the clinical endpoint stays continuous
+univar: True = loads the clinical data like age, smoking habit, ecog,..., False = does not add more clinical variables to the dataset
+ecog: True = adds the ecog value of a patient to the dataset, False = does not add the ecog value
+genomics: True = load Genomics data with predictor, False = load Radiomics data with predictor
+num_genomics: 0 = ignore this if Radiomics are loaded, 1000 = load the 1000 genes, 5000 = load the 5000 genes
+'''
     chum, iucpq = get_files(local, genomics, num_genomics)
     chum_clinical, chum_features = chum
     iucpq_clinical, iucpq_features = iucpq
