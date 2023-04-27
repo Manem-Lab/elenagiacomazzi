@@ -61,13 +61,13 @@ def main(feat_sel_method, local_load, savePath, k_max, predictor, train_set, gen
 parser = argparse.ArgumentParser()
 # Adding optional argument
 parser.add_argument("-fs", "--FeatureSelection", type = str, help = "Add Featureselection method (one of ['pearson', 'spearman', 'mim', 'f_reg', 'mrmr'])")
-parser.add_argument("-local", "--local", type = str, help = "Load data locally")
-parser.add_argument("-path", "--savePath", type = str, help = "Base path to save the data")
-parser.add_argument("-k_max", "--k_max", type = int, help = "Try up to k features")
-parser.add_argument("-pred", "--predictor", type = str, help = "Predictor - clinical endpoint")
-parser.add_argument("-trainSet", "--TrainSet", type = str, help = "Which of the two loaded dataset is used as training set")
-parser.add_argument("-genomics", "--Genomics", type = str, help = "Use Genomics data ?")
-parser.add_argument("-num_gen", "--NumGenomics", help = "Use statset of 1000 or 5000 genes")
+parser.add_argument("-local", "--local", type = str, help = "Load data locally, 'True'/'False'")
+parser.add_argument("-path", "--savePath", type = str, help = "Base path to save the data exp.: '../../exp1/")
+parser.add_argument("-k_max", "--k_max", type = int, help = "Try up to k(int) features exp.: 50, 100")
+parser.add_argument("-pred", "--predictor", type = str, help = "Predictor - clinical endpoint (one of ['os_days','pfs_days', "pdl1_tps']")
+parser.add_argument("-trainSet", "--TrainSet", type = str, help = "Which of the two loaded dataset is used as training set, either 'CHUM' or 'IUCPQ'")
+parser.add_argument("-genomics", "--Genomics", type = str, help = "Use Genomics data ? 'True'/'False'")
+parser.add_argument("-num_gen", "--NumGenomics", help = "Use statset of 1000 or 5000 genes exp.: 1000")
 args = parser.parse_args()
 
 if args.local == "False": local = False
